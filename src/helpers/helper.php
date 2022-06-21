@@ -1,9 +1,35 @@
 <?php
 
-
-//-----------------app---------------
-
 use Core\Application;
+use Core\helpers\Hash;
+
+// ------------------------------------------
+// ------------------------------------------
+// ----------------config--------------------
+if (!function_exists('config')) {
+
+    function config($key = null,$default = null)
+    {
+        if(is_null($key)){
+            return app()->config;
+
+        }
+
+        if(is_array($key)){
+            
+            return config()->set($key);
+        }
+
+        return config()->get($key,$default);
+    }
+
+}
+// ------------------------------------------
+// ------------------------------------------
+// ------------------------------------------
+// ------------------------------------------
+//-----------------app---------------
+//-----------------app---------------
 
 if (!function_exists('app')) {
     function app()
@@ -31,7 +57,28 @@ if (!function_exists('base_path')) {
 }
 
 
+//-------------------------------
+//-------------------------------
+if (!function_exists('config_path')) {
+    function config_path()
+    {
+        return base_path() . 'config' . DS;
+    }
+}
 
+
+//-------------------------------
+//-------------------------------
+
+if (!function_exists('bcrypt')) {
+    function bcrypt($pass)
+    {
+
+       return Hash::make($pass);
+    }
+}
+
+//-------------------------------
 //-------------env---------------
 
 if (!function_exists('env')) {
@@ -52,6 +99,16 @@ if (!function_exists('view_path')) {
     {
 
         return base_path() . 'views' . DS;
+    }
+}
+
+// ---------------------------------------
+
+if (!function_exists('config_path')) {
+    function config_path()
+    {
+
+        return base_path() . 'config' . DS;
     }
 }
 
@@ -140,6 +197,16 @@ if (!function_exists('value')) {
 
 // ---------------------------------------
 // ---------------------------------------
+if (!function_exists('convertStringContean')) {
+
+    function convertStringContean($value)
+    {
+
+
+        return ($value instanceof Closure) ? $value() : $value;
+    }
+}
+
 // ---------------------------------------
 // ---------------------------------------
 // ---------------------------------------

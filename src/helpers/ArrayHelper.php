@@ -117,6 +117,7 @@ class ArrayHelper
             }
         }
 
+
         foreach ($array as $key => $value) {
 
             if (call_user_func($callback, $value, $key)) {
@@ -204,9 +205,9 @@ class ArrayHelper
 
     // ------------------------------------------d
 
-    public static function set($array, $key, $value)
+    public static function set(&$array, $key, $value)
     {
-
+        
         $orginal = &$array;
 
         if (!static::accessible($array)) {
@@ -217,45 +218,57 @@ class ArrayHelper
         if (static::exists($array, $key)) {
             $array[$key] = value($value);
 
-            return $array;
+
+            return [ $key => $array[$key]];
+
         }
 
 
         if (is_null($key)) {
+
             return $array;
         }
 
+      
+         //when thw key if not array--
 
         if (!str_contains($key, '.')) {
+
+            
+
             return $array[$key] ? $array[$key] = value($value) : $array;
         }
 
-      
-
-
         $parts = explode(".", $key);
+
+        
+
 
         while (count($parts) > 1) {
             $part = array_shift($parts);
-
+           
             if (isset($array[$part]) && is_array($array[$part])) {
                 $array = &$array[$part];
+               
             } else {
 
                 continue;
             }
         }
-        
+
 
         $elpart = array_shift($parts);
 
-        if(isset($array[$elpart])){
-            $array[$elpart] = $value;
+        if (isset($array[$elpart])) {
+            
+           $array[$elpart] = $value;
+          return [$elpart =>  $array[$elpart]];
+        } else {
+            return null;
         }
 
-       
-        return $array;
 
+        return $array[$elpart];
     }
     // ------------------------------------------d
 
@@ -277,25 +290,75 @@ class ArrayHelper
 
 
         if (!str_contains($key, '.')) {
+            
+
             return $array[$key] ?? value($default);
         }
 
-        foreach (explode(".", $key) as $part) {
-            if (static::accessible($array[$part]) && static::exists($array, $part)) {
-                $array = $array[$part];
+
+        $parts = explode(".", $key);
+
+        while (count($parts) > 1) {
+            $part = array_shift($parts);
+
+            if (isset($array[$part]) && is_array($array[$part])) {
+                $array = &$array[$part];
             } else {
-                return value($default);
+
+                continue;
             }
         }
 
-        return $array;
+
+        $elpart = array_shift($parts);
+
+        if (isset($array[$elpart])) {
+            
+            return  $array[$elpart];
+        } else {
+            return  value($default) ;
+        }
     }
+    // ------------------------------------------d
+    // public static function get($array, $key, $default = null)
+    // {
+    //     if (!static::accessible($array)) {
+    //         //---its not array
+    //         return value($default);
+    //     }
+
+    //     if (static::exists($array, $key)) {
+    //         return $array[$key];
+    //     }
+
+
+    //     if (is_null($key)) {
+    //         return $array;
+    //     }
+
+
+    //     if (!str_contains($key, '.')) {
+    //         return $array[$key] ?? value($default);
+    //     }
+
+    //     foreach (explode(".", $key) as $part) {
+    //         if (static::accessible($array[$part]) && static::exists($array, $part)) {
+    //             $array = $array[$part];
+    //         } else {
+    //             return value($default);
+    //         }
+
+    //     }
+
+    //     return $array;
+    // }
+    // ------------------------------------------d
     // ------------------------------------------d
 
 
-    public static function unset($array,$key)
+    public static function unset($array, $key)
     {
-       return static::set($array,$key,null);
+        return static::set($array, $key, null);
     }
 
     // ------------------------------------------d

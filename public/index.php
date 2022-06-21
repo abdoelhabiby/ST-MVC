@@ -1,10 +1,19 @@
 <?php
 
-use Core\helpers\ArrayHelper;
+session_start();
+
 use Core\View\View;
+use App\Models\User;
+use Core\Application;
 use Core\Http\Route;
+use Core\helpers\Str;
+use Core\helpers\Hash;
 use Core\Http\Request;
 use Core\Http\Response;
+use Core\helpers\Config;
+use Core\helpers\ArrayHelper;
+use Core\Database\Managers\MySqlManager;
+use Core\helpers\Session;
 
 require_once "../vendor/autoload.php";
 
@@ -15,65 +24,29 @@ require_once "../routes/web.php";
 $dotenv = Dotenv\Dotenv::createMutable(__DIR__ . "/../", ".env");
 $dotenv->load();
 
-
-
-
 $array = [
-    "front" => 'tttt',
-    "web",
-    "dashboard" => [
-        "admins" => [
-            "index" => ['testo'], "create", "update"
-        ],
-        "users" => [
-            "index", "create", "update"
+    "database" => [
+        "default" => 'mysql',
+        "connection" => [
+            "mysql" => [
+                "dbname" => 'mvc',
+                "username" => 'root',
+                "password" => ''
+            ]
         ]
     ]
 ];
 
 
-
-
-//----we need to now the admin has data..
-
-$key = "dashboard.admins";
-
-
-$get = ArrayHelper::get($array,$key);
-
-dd($get);
+$session =new Session;
 
 
 
-//first check if the key existin first keys
-
-if (ArrayHelper::exists($array, $key)) {
-    dd($array[$key]);
-}
-
-//else take this key and explode by separetir (.) if i needed search by parts
-
-$parts = explode('.', $key);
-
-$sub_array = $array;
-
-// if (count($parts) > 1) {
+$value = $_SESSION['messages_flash'];
 
 
-//     foreach ($parts as $part) {
 
-//         if (ArrayHelper::exists($sub_array, $part) || ArrayHelper::accessible($sub_array[$part])) {
-
-//             $sub_array = $sub_array[$part];
-//         } else {
-//             return false;
-//         }
-//     }
-
-//     dd($sub_array);
-// } else {
-//     return false;
-// }
+dd($value);
 
 
 
